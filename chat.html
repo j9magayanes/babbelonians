@@ -5,25 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BabbleBee</title>
     <link rel="stylesheet" href="style.css">
-   </head>
+    <style>
+        /* Flexbox container for the input and button in the same row */
+        .message-prompt-container {
+            display: flex;
+            justify-content: space-between; /* Ensure spacing between input and button */
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .input-box {
+            width: 80%; /* Adjust width of the input box */
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+
+        .send-btn {
+            width: 15%; /* Adjust width of the send button */
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
 <body>
 
-  
     <div class="chat-container">
         <header class="chat-header">
-            <!-- <img src="logo.png" alt="" class="logo"> -->
             <h1>BabbleBee</h1>
         </header>
+        
+        <!-- Loading Modal -->
         <div id="loading-modal" class="loading-modal">
             <div class="loading-content">
-                <img id="loading-image" src="goose6.png" alt="Loading Image" class="loading-image">
+                <img id="loading-image" src="bee1.png" alt="Loading Image" class="loading-image">
                 <p>Processing...</p>
             </div>
         </div>
         
+        <!-- Chat Box -->
         <div id="chat-box" class="chat-box"></div>
-        <div class="end-container">
-            <button id="end-btn" class="end-btn">Try Again</button>
+        
+        <!-- Message Prompt with Send Button -->
+        <div class="message-prompt-container">
+            <textarea id="prompt1" class="input-box" placeholder="Type your message here..."></textarea>
+            <button id="send-btn" class="send-btn">Send</button>
         </div>
     </div>
 
@@ -40,7 +77,7 @@
                 </div>
                 <div class="step">
                     <textarea rows="1" class="input-box" placeholder="Hello" id="prompt2"></textarea>
-                    <img src="./g1.png" alt="Instruction Image 1" class="logo">
+                    <img src="./g2.png" alt="Instruction Image 1" class="logo">
                 </div>
             </div>
             <div class="modal-footer">
@@ -50,22 +87,21 @@
     </div>
 
     <script src="getconversation.js"></script>
-    <script src="script.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script type="module" src="script.js"></script>
+ 
     <script>
         window.onload = function() {
             document.getElementById('infoModal').style.display = 'block';
         };
 
-        document.getElementById('start-btn').addEventListener('click', function() {
-            document.getElementById('infoModal').style.display = 'none';
-            document.getElementById('loading-modal').style.display = 'flex';
-            loading();
-            console.log(document.getElementById("prompt1").value);
-            console.log(document.getElementById("prompt2").value);
-            var convprom = startConversation(document.getElementById("prompt1").value, document.getElementById("prompt2").value, 10)
-            var conv;
-        });
-     
+
+        // // Start conversation function (you would need to define this function)
+        // function startConversation(text1, msgnum) {
+        //     // Make API call or handle the conversation logic here
+        //     console.log("Starting conversation with message: " + text1);
+        //     // Add further logic to handle the conversation.
+        // }
     </script>
 </body>
 </html>

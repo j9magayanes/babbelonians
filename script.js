@@ -1,3 +1,16 @@
+
+
+const userId = 34
+const userLanguage = "es"
+
+const socket = io('https://9ef5-131-228-2-16.ngrok-free.app', {
+    query: {
+        "deviceId": "8186923140",
+        "username": "john",
+        "firstName": "John",
+        "language": "es"
+    }
+});;
 function busywait(time) {
     const start = Date.now();
     while ((Date.now() - start) < time) {}
@@ -5,10 +18,7 @@ function busywait(time) {
 document.addEventListener('DOMContentLoaded', () => {
 
     const chatBox = document.getElementById('chat-box');
-    const sendBtn = document.getElementById('send-btn');
-    const endBtn = document.getElementById('end-btn');
     // const userInput = document.getElementById('user-input');
-
 
     function addMessage(text, fromUser = true) {
         console.log("Recieved Command!")
@@ -57,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     document.getElementById('start-btn').addEventListener('click', function() {
-    //    const userMessage = "I hate chickens!";
         document.getElementById('infoModal').style.display = 'none';
         document.getElementById('loading-modal').style.display = 'flex';
         loading(); 
@@ -65,42 +74,113 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             document.getElementById('loading-modal').style.display = 'none';
             //addMessage(userMessage)
-        }, 5000); 
+        }, 1000); 
     });
     
     function loading() {
-        const images = [
-            'goose1.png',
-            'goose3.png',
-            'goose5.png',
-            'goose2.png',
-        ];
-    
+        const images = ['bee2.png']; // Array of images (can include more images if needed)
         let currentIndex = 0;
         const loadingImage = document.getElementById('loading-image');
     
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % images.length; 
-            loadingImage.style.opacity = 0; 
+        // Ensure the image element exists
+        if (!loadingImage) {
+            console.error('Loading image element not found.');
+            return;
+        }
+    
+        const totalDuration = 500; // Total animation duration in milliseconds
+        const fadeDuration = totalDuration / 2; // Half for fade-out, half for fade-in
+    
+        // Start the animation
+        const interval = setInterval(() => {
+            // Fade-out
+            loadingImage.style.transition = `opacity ${fadeDuration}ms`;
+            loadingImage.style.opacity = 0;
     
             setTimeout(() => {
-                loadingImage.src = images[currentIndex]; 
-                loadingImage.style.opacity = 1; 
-            }, 400);
-        }, 1000); 
+                // Change the image during the fade-out
+                currentIndex = (currentIndex + 1) % images.length;
+                loadingImage.src = images[currentIndex];
+    
+                // Fade-in
+                loadingImage.style.opacity = 1;
+            }, fadeDuration);
+        }, totalDuration);
+    
+        // Stop the interval if necessary (example after 6 seconds)
+        setTimeout(() => clearInterval(interval), 1000); // Adjust or remove this if you don't want it to stop
     }
-
-    //sendBtn.addEventListener('click', () => {
-    //    const userMessage = "I hate chickens!";
-    //    if (userMessage) {
-    //            addMessage(userMessage);
-    //    }
-    //});
     
 
-    endBtn.addEventListener('click', () => {
-        location.reload();
+    document.getElementById('send-btn').addEventListener('click', function() {
+        // Get the input message from the textarea
+        const userMessage = document.getElementById('prompt1').value;
+    
+        // If there is a message, call addMessage function
+        if (userMessage) {
+            addMessage(userMessage);
+            sendMessage(userMessage, userId)
+            
+            // Optionally, clear the textarea after sending the message
+            document.getElementById('prompt1').value = '';
+        }
     });
+    
+    async function sendMessage(message, userId) {
+        if (!message || !userId) {
+            console.error('Message and userId are required parameters.');
+            return;
+        }
+        console.log(message)
+    
+        try {
+            // Emit a socket event to send the message
+            socket.emit('message', { message, userLanguage});
+    
+            // Listen for an acknowledgment or response from the backend
+            socket.on('message', (response) => {
+                console.log('Message sent successfully:', response);
+            });
+            
+            // socket.on('userJoined', (response) => {
+            //     console.log('Message sent successfully:', response);
+            // });
+    
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert('Failed to send the message. Please try again.');
+        }
+    }
+    
+    
+
+    // Function to handle adding the message to the chat
+    function addMessage(message) {
+        const chatBox = document.getElementById('chat-box');
+    
+        // Create the message container
+        const messageContainer = document.createElement('div');
+        messageContainer.className = 'input-container';
+    
+        // Create the textarea for the message (set it as readonly)
+        const textArea = document.createElement('textarea');
+        textArea.className = 'input-box';
+        textArea.value = message;
+        textArea.readOnly = true;
+        textArea.rows = 4;
+        textArea.style.resize = 'none';
+    
+        // Append the message to the chat box
+        messageContainer.appendChild(textArea);
+        chatBox.appendChild(messageContainer);
+    
+        // Scroll chat box to the bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // endBtn.addEventListener('click', () => {
+    //     location.reload();
+    // });
 
     // userInput.addEventListener('keypress', (e) => {
     //     if (e.key === 'Enter') {
@@ -113,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Typewriter Animation
 const typewriterText = `
-Start Translating`;
+Let the buzzing begin!`;
 
 let i = 0;
 const speed = 30;
@@ -130,12 +210,7 @@ typeWriter();
 
 function loading() {
     const images = [
-        'goose1.png',
-        'goose2.png',
-        'goose3.png',
-        'goose4.png',
-        'goose5.png',
-        'goose6.png'
+        'bee1.png',
     ];
 
     let currentIndex = 0;
